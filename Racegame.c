@@ -96,7 +96,6 @@ void sort_horses_by_ranking(Horse horses[], int num_horses) {
     }
 }
 
-
 int main() {
     int num_players;
     printf("플레이어 수를 입력하세요 (1~10): ");
