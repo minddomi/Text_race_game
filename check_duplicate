@@ -1,0 +1,49 @@
+순위를 정하는 목적인 말달리기에서
+경주마 중복선택 가능은 목적에 부합하지 않음
+
+Racegame.c파일에는
+main 안에 
+'''
+for (int i = 0; i < num_players; i++) {
+        printf("플레이어 %d, 경주마를 선택하세요 (1~%d): ", i + 1, num_horses);
+        scanf("%d", &player_horses[i]);
+        if (player_horses[i] < 1 || player_horses[i] > num_horses) {
+            printf("유효하지 않은 선택입니다. 프로그램을 종료합니다.\n");
+            return 1;
+        }
+        player_horses[i]--;
+    }
+'''
+로 되어있는 상태
+ex) 5선택 -> 1~5 말을 선택 -> 6선택시 프로그램 종료
+
+프로그램 종료보다 재입력하도록 하는게 좋을듯
+말 선택과 중복 확인을 함수로 쓸 경우
+
+
+// 중복 선택 확인 함수
+int already_selected(int player_horses[], int current_player, int horse_number) {
+    for (int i = 0; i < current_player; i++) {
+        if (player_horses[i] == horse_number) {
+            return 1; // 이미 선택된 말
+        }
+    }
+    return 0; // 중복 아님
+}
+
+main 함수 for문 수정
+
+for (int i = 0; i < num_players; i++) {
+    while (1) {
+        printf("플레이어 %d, 경주마를 선택하세요 (1~%d): ", i + 1, num_horses);
+        scanf("%d", &player_horses[i]);
+        if (player_horses[i] < 1 || player_horses[i] > num_horses) {
+            printf("유효하지 않은 선택입니다. 다시 입력하세요.\n");
+        } else if (already_selected(player_horses, i, player_horses[i]-1)) {
+            printf("이미 선택된 말입니다. 다른 말을 선택하세요.\n");
+        } else {
+            break; // 중복x
+        }
+    }
+    player_horses[i]--; 
+}
