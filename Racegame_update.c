@@ -68,7 +68,7 @@ void real_time_ranking(Horse horses[], int num_horses)
     }
 }
 
-// 최종 순위 업데이트
+// 최종 순위 업데이트(범수님이 만든 순위 계산 함수에서 공동 등수를 고려해 코드 수정)
 void last_ranking(Horse horses[], int num_horses, int *current_rank)
 {
     for (int i = 0; i < num_horses; i++)
@@ -179,7 +179,7 @@ int main()
         printf("유효하지 않은 입력입니다. 다시 입력하세요.\n");
     }
 
-    Horse horses[MAX_HORSES];
+    Horse horses[MAX_HORSES];// MAS_HORSES 크기 만큼의 구조체 배열생성, MAX_HORSES 만큼의 마구간을 만든느낌
 
     // 각 경주마 이름 입력
     for (int i = 0; i < num_horses; i++)
@@ -187,15 +187,18 @@ int main()
         printf("경주마 %d에 탈 플레이어 이름을 쓰세요(두 글자): ", i + 1);
         scanf("%s", horses[i].player_name);
 
-        sprintf(horses[i].horse_name, "Horse%d", i + 1);
+        sprintf(horses[i].horse_name, "Horse%d", i + 1);// horse_name에 "Horse%d" 저장
         horses[i].position = 0;
         horses[i].ranking = 0;
         horses[i].last_rank = 0;
         horses[i].color = rand() % 10;
+        //위에 생성한 구조체 배열안에 각 말의 초기 정보설정
     }
 
     int current_rank = 1;
     int frame = 0;
+    //위 두 변수들은 개별 말마다의 독립된 변수가 아니고 전체 말에 대한 전역적인 변수로
+    //for문 안에 넣으면 독립적으로 변수가 생겨 전역적으로 관리할 수 없음
 
     while (1)
     {
@@ -217,6 +220,14 @@ int main()
     move_horses(horses, num_horses);
     Sleep(200);
     frame++;
+     /*마지막 말이 결승선에 도착하기전에 경주가 종료되는걸 방지
+
+    마지막말이 결승선에 도착하기전에 결승선에 도착하기전에 경주가 끝나서 속도가 아주느린
+    출력되지않는 유령마를 추가해 위 문제를 해결하려 했으나 꼴등말이 유령마보다 속도가
+    느린 경우나, 코드가 복잡해져 다른방법 고안
+
+    고안 끝에 경주가 끝난뒤 딱 한 프래임만 더 출력하니 문제 해결완료
+    */
 
     printf("\n경주가 종료되었습니다!\n");
 
