@@ -49,7 +49,7 @@ void clear_screen()
 }
 
 // 실시간 순위 업데이트 함수
-void real_time_rankings(Horse horses[], int num_horses)
+void real_time_ranking(Horse horses[], int num_horses)
 {
     for (int i = 0; i < num_horses; i++)
     {
@@ -199,7 +199,7 @@ int main()
 
     while (1)
     {
-        real_time_rankings(horses, num_horses);
+        real_time_ranking(horses, num_horses);
         last_ranking(horses, num_horses, &current_rank);
         display_race(horses, num_horses, frame);
         move_horses(horses, num_horses);
@@ -211,7 +211,7 @@ int main()
             break;
         }
     }
-    real_time_rankings(horses, num_horses);
+    real_time_ranking(horses, num_horses);
     last_ranking(horses, num_horses, &current_rank);
     display_race(horses, num_horses, frame);
     move_horses(horses, num_horses);
