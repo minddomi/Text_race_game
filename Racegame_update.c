@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h> // rand(), srand() 함수 사용
 #include <time.h>   // time() 함수 사용
-#include <unistd.h> // system("clear"), sleep() 함수 사용
+#include <windows.h> // system("clear"), sleep() 함수 사용
 #include <string.h>
 
 #define MAX_HORSES 10
@@ -46,7 +46,7 @@ char *colors[] = {
 // 콘솔 화면 지우기
 void clear_screen()
 {
-    system("clear");
+    system("cls");
 }
 
 // 실시간 순위 업데이트 함수
@@ -241,7 +241,7 @@ int main()
         last_ranking(horses, num_horses, &current_rank);
         display_race(horses, num_horses, frame);
         move_horses(horses, num_horses);
-        sleep(1);
+        Sleep(200);
         frame++;
 
         if (is_race_over(horses, num_horses))
@@ -253,7 +253,7 @@ int main()
     last_ranking(horses, num_horses, &current_rank);
     display_race(horses, num_horses, frame);
     move_horses(horses, num_horses);
-    sleep(1);
+    Sleep(200);
     frame++;
     /*마지막 말이 결승선에 도착하기전에 경주가 종료되는걸 방지
 
