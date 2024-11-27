@@ -6,7 +6,6 @@
 
 #define MAX_HORSES 10
 #define RACE_DISTANCE 40
-#define MAX_NAME_LEN 50
 
 typedef struct
 {
