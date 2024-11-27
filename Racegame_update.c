@@ -171,12 +171,14 @@ int main()
     while (1)
     {
         printf("달리는 말의 수를 입력하세요 (1~%d): ", MAX_HORSES);
-        scanf("%d", &num_horses);
+        fgets(input, sizeof(input), stdin);
+        num_horses = atoi(input); 
+
         if (num_horses >= 1 && num_horses <= MAX_HORSES)
         {
             break;
         }
-        printf("유효하지 않은 입력입니다. 다시 입력하세요.\n");
+        printf("유효하지 않은 입력입니다. 1에서 %d 사이의 숫자를 입력하세요.\n", MAX_HORSES);
     }
 
     Horse horses[MAX_HORSES];// MAS_HORSES 크기 만큼의 구조체 배열생성, MAX_HORSES 만큼의 마구간을 만든느낌
@@ -184,8 +186,34 @@ int main()
     // 각 경주마 이름 입력
     for (int i = 0; i < num_horses; i++)
     {
-        printf("경주마 %d에 탈 플레이어 이름을 쓰세요(두 글자): ", i + 1);
-        scanf("%s", horses[i].player_name);
+         while (1)
+        {
+            printf("경주마 %d에 탈 플레이어 이름을 쓰세요(두 글자): ", i + 1);
+            char input[MAX_NAME_LEN];
+            fgets(input, sizeof(input), stdin);
+
+            int len = strlen(input);
+            int is_hangul = 1;
+
+            if (len == 6)
+            {
+                for (int j = 0; j < len; j += 3)
+                {
+                    if ((unsigned char)input[j] < 0xE0 || (unsigned char)input[j] > 0xEF)
+                    {
+                        is_hangul = 0;
+                        break;
+                    }
+                }
+            }
+
+            if (is_hangul)
+            {
+                strcpy(horses[i].player_name, input);
+                break;
+            }
+            printf("유효하지 않은 입력입니다. 한글 두 글자를 입력하세요.\n");
+        }
 
         sprintf(horses[i].horse_name, "Horse%d", i + 1);// horse_name에 "Horse%d" 저장
         horses[i].position = 0;
