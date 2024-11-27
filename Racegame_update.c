@@ -166,6 +166,7 @@ int main()
     srand(time(0));
 
     int num_horses;
+    char input[10];
 
     // 경주마 수 입력
     while (1)
