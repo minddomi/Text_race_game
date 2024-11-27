@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h> // rand(), srand() 함수 사용
 #include <time.h>   // time() 함수 사용
-#include <windows.h> // system("clear"), sleep() 함수 사용
+#include <windows.h>
 #include <string.h>
 
 #define MAX_HORSES 10
