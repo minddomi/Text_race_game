@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h> // rand(), srand() 함수 사용
 #include <time.h>   // time() 함수 사용
