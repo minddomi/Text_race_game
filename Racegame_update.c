@@ -1,12 +1,12 @@
 #include <stdio.h>
-#include <stdlib.h>  // rand(), srand() 함수 사용
-#include <time.h>    // time() 함수 사용
-#include <windows.h> // system("clear"), sleep() 함수 사용
+#include <stdlib.h> // rand(), srand() 함수 사용
+#include <time.h>   // time() 함수 사용
+#include <unistd.h> // system("clear"), sleep() 함수 사용
 #include <string.h>
 
 #define MAX_HORSES 10
 #define RACE_DISTANCE 40
-#define MAX_NAME_LEN 10
+#define MAX_NAME_LEN 50
 
 typedef struct
 {
@@ -46,7 +46,7 @@ char *colors[] = {
 // 콘솔 화면 지우기
 void clear_screen()
 {
-    system("cls");
+    system("clear");
 }
 
 // 실시간 순위 업데이트 함수
@@ -167,14 +167,14 @@ int main()
     srand(time(0));
 
     int num_horses;
-    char input[10];
+    char input[50];
 
     // 경주마 수 입력
     while (1)
     {
         printf("달리는 말의 수를 입력하세요 (1~%d): ", MAX_HORSES);
         fgets(input, sizeof(input), stdin);
-        num_horses = atoi(input); 
+        num_horses = atoi(input);
 
         if (num_horses >= 1 && num_horses <= MAX_HORSES)
         {
@@ -183,30 +183,35 @@ int main()
         printf("유효하지 않은 입력입니다. 1에서 %d 사이의 숫자를 입력하세요.\n", MAX_HORSES);
     }
 
-    Horse horses[MAX_HORSES];// MAS_HORSES 크기 만큼의 구조체 배열생성, MAX_HORSES 만큼의 마구간을 만든느낌
+    Horse horses[MAX_HORSES]; // MAS_HORSES 크기 만큼의 구조체 배열생성, MAX_HORSES 만큼의 마구간을 만든느낌
 
     // 각 경주마 이름 입력
     for (int i = 0; i < num_horses; i++)
     {
-         while (1)
+        while (1)
         {
             printf("경주마 %d에 탈 플레이어 이름을 쓰세요(두 글자): ", i + 1);
-            char input[MAX_NAME_LEN];
             fgets(input, sizeof(input), stdin);
+            
+            input[strcspn(input, "\n")] = '\0';
 
-            int len = strlen(input);
-            int is_hangul = 1;
+            int len = strlen(input); 
+            int is_hangul = 1;       
 
             if (len == 6)
             {
-                for (int j = 0; j < len; j += 3)
+                for (int j = 0; j < len; j += 3) 
                 {
                     if ((unsigned char)input[j] < 0xE0 || (unsigned char)input[j] > 0xEF)
                     {
-                        is_hangul = 0;
+                        is_hangul = 0; 
                         break;
                     }
                 }
+            }
+            else
+            {
+                is_hangul = 0;
             }
 
             if (is_hangul)
@@ -217,18 +222,18 @@ int main()
             printf("유효하지 않은 입력입니다. 한글 두 글자를 입력하세요.\n");
         }
 
-        sprintf(horses[i].horse_name, "Horse%d", i + 1);// horse_name에 "Horse%d" 저장
+        sprintf(horses[i].horse_name, "Horse%d", i + 1); // horse_name에 "Horse%d" 저장
         horses[i].position = 0;
         horses[i].ranking = 0;
         horses[i].last_rank = 0;
         horses[i].color = rand() % 10;
-        //위에 생성한 구조체 배열안에 각 말의 초기 정보설정
+        // 위에 생성한 구조체 배열안에 각 말의 초기 정보설정
     }
 
     int current_rank = 1;
     int frame = 0;
-    //위 두 변수들은 개별 말마다의 독립된 변수가 아니고 전체 말에 대한 전역적인 변수로
-    //for문 안에 넣으면 독립적으로 변수가 생겨 전역적으로 관리할 수 없음
+    // 위 두 변수들은 개별 말마다의 독립된 변수가 아니고 전체 말에 대한 전역적인 변수로
+    // for문 안에 넣으면 독립적으로 변수가 생겨 전역적으로 관리할 수 없음
 
     while (1)
     {
@@ -236,7 +241,7 @@ int main()
         last_ranking(horses, num_horses, &current_rank);
         display_race(horses, num_horses, frame);
         move_horses(horses, num_horses);
-        Sleep(200);
+        sleep(1);
         frame++;
 
         if (is_race_over(horses, num_horses))
@@ -248,16 +253,16 @@ int main()
     last_ranking(horses, num_horses, &current_rank);
     display_race(horses, num_horses, frame);
     move_horses(horses, num_horses);
-    Sleep(200);
+    sleep(1);
     frame++;
-     /*마지막 말이 결승선에 도착하기전에 경주가 종료되는걸 방지
+    /*마지막 말이 결승선에 도착하기전에 경주가 종료되는걸 방지
 
-    마지막말이 결승선에 도착하기전에 결승선에 도착하기전에 경주가 끝나서 속도가 아주느린
-    출력되지않는 유령마를 추가해 위 문제를 해결하려 했으나 꼴등말이 유령마보다 속도가
-    느린 경우나, 코드가 복잡해져 다른방법 고안
+   마지막말이 결승선에 도착하기전에 결승선에 도착하기전에 경주가 끝나서 속도가 아주느린
+   출력되지않는 유령마를 추가해 위 문제를 해결하려 했으나 꼴등말이 유령마보다 속도가
+   느린 경우나, 코드가 복잡해져 다른방법 고안
 
-    고안 끝에 경주가 끝난뒤 딱 한 프래임만 더 출력하니 문제 해결완료
-    */
+   고안 끝에 경주가 끝난뒤 딱 한 프래임만 더 출력하니 문제 해결완료
+   */
 
     printf("\n경주가 종료되었습니다!\n");
 
