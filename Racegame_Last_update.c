@@ -6,7 +6,7 @@
 #include <string.h>
 
 #define MAX_HORSES 10
-#define RACE_DISTANCE 40
+#define RACE_DISTANCE 80
 
 typedef struct
 {
@@ -49,6 +49,16 @@ void clear_screen()
     system("cls");
 }
 
+void set_console_font_size(int font_size)
+{
+    CONSOLE_FONT_INFOEX cfi;
+    cfi.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+    GetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+    cfi.dwFontSize.X = 0;
+    cfi.dwFontSize.Y = font_size;
+    SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+}
+
 // 실시간 순위 업데이트 함수
 void real_time_ranking(Horse horses[], int num_horses)
 {
@@ -77,16 +87,18 @@ void last_ranking(Horse horses[], int num_horses, int* current_rank)
         if (horses[i].position == RACE_DISTANCE && horses[i].last_rank == 0)
         {
             horses[i].last_rank = *current_rank;
+            int count_same_rank = 1;
 
             for (int j = i + 1; j < num_horses; j++)
             {
                 if (horses[j].position == RACE_DISTANCE && horses[j].last_rank == 0 && horses[j].position == horses[i].position)
                 {
                     horses[j].last_rank = *current_rank;
+                    count_same_rank++;
                 }
             }
 
-            (*current_rank)++;
+            (*current_rank)+= count_same_rank;
         }
     }
 }
@@ -95,10 +107,11 @@ void last_ranking(Horse horses[], int num_horses, int* current_rank)
 void display_race(Horse horses[], int num_horses, int frame)
 {
     clear_screen();
-    printf("<start>      1       10       20       30       40(end)\n");
-    printf("---------------------------------------------------\n");
+    set_console_font_size(24);
+    printf("<start>       1        10        20       30        40       50        60        70       80(end)\n");
+    printf("-------------------------------------------------------------------------------------------------\n");
     for (int i = 0; i < num_horses; i++)
-    {
+    {   
         printf("%s", horses[i].horse_name);
         for (int j = 0; j < horses[i].position; j++)
         {
@@ -112,7 +125,7 @@ void display_race(Horse horses[], int num_horses, int frame)
         }
         else
         {
-            if (horses[i].position > 30)
+            if (horses[i].position > 55)
             {
                 printf("[누가 승리하게 될까요!]");
             }
@@ -129,7 +142,7 @@ void display_race(Horse horses[], int num_horses, int frame)
         {
             printf(" ");
         }
-        printf("%s%s\033[0m\n", colors[horses[i].color], legs[frame % 9]);
+        printf("%s%s\033[0m\n\n", colors[horses[i].color], legs[frame % 9]);
     }
 }
 
@@ -183,7 +196,7 @@ int main()
         printf("유효하지 않은 입력입니다. 1에서 %d 사이의 숫자를 입력하세요.\n", MAX_HORSES);
     }
 
-    Horse horses[MAX_HORSES]; 
+    Horse horses[MAX_HORSES];
 
     // 각 경주마 이름 입력
     for (int i = 0; i < num_horses; i++)
@@ -253,6 +266,18 @@ int main()
     move_horses(horses, num_horses);
     Sleep(200);
     frame++;
+
+    printf("\n<최종 순위>\n");
+    for (int i = 1; i <= num_horses; i++)
+    {
+        for (int j = 0; j < num_horses; j++)
+        {
+            if (horses[j].last_rank == i)
+            {
+                printf("%d위: %s (플레이어: %s)\n", i, horses[j].horse_name, horses[j].player_name);
+            }
+        }
+    }
 
     printf("\n경주가 종료되었습니다!\n");
 
